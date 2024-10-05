@@ -1,35 +1,41 @@
-print('Inicializando scriping...')
+print('Inicializando scraping...')
 
 import requests
 from bs4 import BeautifulSoup
 
-#EJEMPLO DE URL DE INFOJOBS. POR FILTRO ESPAÑA Y MAS RECIENTES. 
-URL_INFOJOBS= "https://www.infojobs.net/jobsearch/search-results/list.xhtml?keyword=&segmentId=&page=1&sortBy=PUBLICATION_DATE&onlyForeignCountry=false&countryIds=17&sinceDate=_24_HOURS&salaryMin=6000&salaryPeriod=YEAR&salaryType=GROSS"
-
-#----------------------------------------------------
-# DES DE LA PAGINA PRINCIPAL NO PODEMOS OBTENER LA INFO DEL EMPLEO, TENDRIAMOS QUE ENTRAR PÁGINA POR PAGINA. POR PÁGINA TENEMOS 20 EMPLEOS + 2 PATROCINADO.
-# VEMOS UN EJEMPLO CON LA PÁGINA DE DENTRO DE UN EMPLEO. 
-#----------------------------------------------------
-
-URL_INFOJOBS_ESPECIFICO= "https://www.infojobs.net/burgos/tecnico-reparacion-h-m-k-tuin-tiendas-apple-burgos/of-i533ef83dda4b4da436ac8a17030ec0?applicationOrigin=search-new&page=1&sortBy=PUBLICATION_DATE"
+# URL de ejemplo para InfoJobs (puedes cambiarla según sea necesario)
+URL_INFOJOBS_ESPECIFICO = "https://www.infojobs.net/parla/preparador-pedidos-textil-h-m-x-turno-noche-30-horas-l-d-illescas/of-i87b7672a834d5d92a7340b79cf400b?applicationOrigin=search-new&page=1&sortBy=PUBLICATION_DATE"
 
 # Simular una petición desde un navegador con un User-Agent
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
 }
 
+
 # Hacer la petición HTTP a la página
 response = requests.get(URL_INFOJOBS_ESPECIFICO, headers=headers)
 
-#Verificamos si la solicitud fue exitosa o si dio un error
-if response.status_code== 200:
-    print(f'Acceso exitoso a la página')
-    #Parsear el HTML de la página con BeautifulSoup
-    soup= BeautifulSoup(response.text, 'html.parser')
+# Verificamos si la solicitud fue exitosa o si dio un error
+if response.status_code == 200:
+    print('Acceso exitoso a la página')
+    
+    # Parsear el HTML de la página con BeautifulSoup
+    soup = BeautifulSoup(response.text, 'html.parser')
 
-    #Imprimir el título de la página para ver si funciona. 
-    print(f"Título de la página: {soup.title.text}")
+    # La fuente de la que obtenemos los datos.
+    resource = "InfoJobs"
+    
+    # Intentar extraer el título del trabajo
+    job_title = URL_INFOJOBS_ESPECIFICO.split('/')[-2].replace('-', ' ').title() 
+
+    # Imprimir la fuente de datos
+    print(f"Fuente de datos: {resource}")
+    
+    # Imprimir el título del trabajo
+    print(f"Descriptivo Titulo: {job_title}")
 else:
     print(f'Error al acceder a la página: {response.status_code}')
 
 
+api_response= requests.get("https://api.infojobs.net/api/9/offer")
+print(api_response)
